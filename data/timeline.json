@@ -159,6 +159,22 @@
       "result": "Pupils sit centred, no receding corners, clean neck-to-shirt transition.",
       "verdict": "shipped",
       "lesson": "A human review pass catches what metrics miss: the agent's measurements were right, but 'looks bald' and 'eyes look sideways' came from looking."
+    },
+    {
+      "id": "11-second-review",
+      "title": "Second review: hair, eyes, polo",
+      "start": "14:25",
+      "end": "14:42",
+      "inputs": "My screenshot and notes",
+      "tools": [
+        "Blender bmesh + NumPy",
+        "Cycles",
+        "glTF exporter"
+      ],
+      "method": "Cut eye openings to the true eye size measured from the photo texture (22 x 8 mm) and re-centred the eyeballs on them; removed all hair roots beside and below the ears; restored the original beard where a repaint had left a flat patch (found by ray-casting from the camera to the exact texel); replaced the t-shirt with an olive polo: folded collar, placket and buttons; added skin pore detail and subsurface scattering.",
+      "result": "Pupils centred with no white outside the lids, clean sideburns, beard fades into the neck, collared shirt.",
+      "verdict": "shipped",
+      "lesson": "When a fix doesn't show up, stop guessing and trace it: a camera ray showed the patch came from an earlier repaint, not the original photo."
     }
   ]
 }

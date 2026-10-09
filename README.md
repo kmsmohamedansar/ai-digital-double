@@ -85,6 +85,18 @@ After looking at the model in Blender I flagged three things. The agent then:
 |---|---|
 | ![](stages/10-feedback-fixes/shirt_front.png) | ![](final/final_front.png) |
 
+### 11. Second review: shipped
+I flagged stray hair below the ears, eyes still looking off-centre, and an artificial look overall. The agent then:
+- **Eyes:** measured my real eye size in the photo texture, recut the openings to 22 × 8 mm, and re-centred both eyeballs on them. They now look straight ahead, with no white outside the lids.
+- **Hair:** removed every hair root beside and below the ears.
+- **Neck:** restored the original beard where an earlier repaint had left a flat skin-coloured block. It found the cause by casting a ray from the camera to the exact texture pixel.
+- **Clothes:** an olive polo with a folded collar, placket and buttons, picked to suit warm brown skin.
+- **Skin:** pore detail and subsurface scattering, so it reads less like plastic.
+
+| Eyes before | Eyes after |
+|---|---|
+| ![](stages/11-second-review/eyecheck.png) | ![](stages/11-second-review/eyecheck4.png) |
+
 ## Lessons
 1. **Capture beats cleverness.** Most failures traced back to input quality: compressed video, or a moving subject.
 2. **Choose the format for the end goal.** The splat gave the best likeness but can't be animated. A mesh with separate eyes can.
