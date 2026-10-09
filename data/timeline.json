@@ -143,6 +143,22 @@
       "result": "Clearly me from front, 3/4 and profile; eyes move; runs in a browser. Stylised-realistic, not film quality.",
       "verdict": "shipped",
       "lesson": "The right format matters more than the best-looking render: a rigged mesh with separate eyes can do things a splat can't."
+    },
+    {
+      "id": "10-feedback-fixes",
+      "title": "Fixes from my review: eyes, temples, neck",
+      "start": "13:47",
+      "end": "14:20",
+      "inputs": "My notes after viewing the model in Blender",
+      "tools": [
+        "Blender bmesh + NumPy",
+        "Cycles baking",
+        "three.js"
+      ],
+      "method": "Re-centred each eyeball on its measured eyelid opening; added missing hair roots at the temple corners (there were none between 38 and 62 mm above the eyes) and short sideburns; repainted the neck with sampled skin tone, blended the seam in the shader, and modelled a crew-neck t-shirt fitted to the neck's measured cross-section.",
+      "result": "Pupils sit centred, no receding corners, clean neck-to-shirt transition.",
+      "verdict": "shipped",
+      "lesson": "A human review pass catches what metrics miss: the agent's measurements were right, but 'looks bald' and 'eyes look sideways' came from looking."
     }
   ]
 }

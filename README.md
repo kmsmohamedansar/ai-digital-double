@@ -19,7 +19,7 @@ This repo documents every attempt: what I tried, what the AI did, what each resu
 | Capture | iPhone 14 Pro Max: photos and a 13-second video |
 | Hardware | MacBook with Apple M4, 16 GB RAM |
 | Cost | $0 |
-| Time | About 3 hours of hands-on work across 9 approaches |
+| Time | About 3.5 hours of hands-on work across 9 approaches plus a review pass |
 | Output | A 6.9 MB GLB with separate eyeballs, in a web viewer where the eyes follow the cursor |
 
 ![Timeline](charts/timeline.svg)
@@ -75,12 +75,23 @@ The agent exported camera positions from Apple's photogrammetry engine and train
 |---|---|---|
 | ![](stages/09-final-model/eyes/eyes_v1.png) | ![](stages/09-final-model/eyes_v9_34.png) | ![](stages/09-final-model/eyes/look_left.png) |
 
+### 10. Fixes from my own review: shipped
+After looking at the model in Blender I flagged three things. The agent then:
+- **Eyes looked sideways:** re-centred each eyeball on its measured eyelid opening (they were 2–3 mm off).
+- **Receding temples:** found zero hair roots in the temple corners between 38 and 62 mm above the eyes, and added about 3,000 there, plus short sideburns.
+- **Neck and collar smear:** repainted the neck with my sampled skin tone, blended the seam in the shader, and modelled a crew-neck t-shirt fitted to the neck's measured shape.
+
+| Before | After |
+|---|---|
+| ![](stages/10-feedback-fixes/shirt_front.png) | ![](final/final_front.png) |
+
 ## Lessons
 1. **Capture beats cleverness.** Most failures traced back to input quality: compressed video, or a moving subject.
 2. **Choose the format for the end goal.** The splat gave the best likeness but can't be animated. A mesh with separate eyes can.
 3. **Hair is the hardest part.** Procedural hair needs grooming to read as one specific person's hair.
 4. **Eyes are where likeness lives.** Painted-on eyes made every version look dead. Real eyeballs changed it most.
-5. **AI is the operator, not the artist.** The agent installed tools, wrote pipelines in Python and Swift, and debugged them quickly. Judging whether it looked like me stayed a human job.
+5. **Review like an art director.** The agent's measurements were right, but "looks bald" and "eyes look sideways" only came from looking.
+6. **AI is the operator, not the artist.** The agent installed tools, wrote pipelines in Python and Swift, and debugged them quickly. Judging whether it looked like me stayed a human job.
 
 ## Honest limits
 - **Quality:** stylized-realistic, not film quality. The face shape comes from a morphable model fitted to 8 video frames, so fine detail is approximate.

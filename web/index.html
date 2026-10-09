@@ -36,7 +36,7 @@ document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x050506);
 const camera = new THREE.PerspectiveCamera(22, innerWidth / innerHeight, 0.01, 10);
-camera.position.set(0, 0, 0.85);
+camera.position.set(0, 0, 0.95);
 
 scene.add(new THREE.HemisphereLight(0xdfe6ff, 0x1a120c, 0.6));
 const key = new THREE.DirectionalLight(0xfff1e0, 2.4); key.position.set(-0.6, 0.5, 0.8); scene.add(key);
@@ -51,8 +51,9 @@ const smooth = new THREE.Vector2(0, 0);
 
 new GLTFLoader().load('digital_double.glb', (gltf) => {
   const model = gltf.scene;
-  const box = new THREE.Box3().setFromObject(model);
-  const c = box.getCenter(new THREE.Vector3());
+  const head = model.getObjectByName('Web_Head') || model;
+  const c = new THREE.Box3().setFromObject(head).getCenter(new THREE.Vector3());
+  c.y -= 0.03; // frame the head with a little shoulder below
   model.position.sub(c);
   rig.add(model);
   model.traverse((o) => {
