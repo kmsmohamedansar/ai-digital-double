@@ -8,9 +8,14 @@
     {
       "id": "01-code-built-head",
       "title": "Head built purely from code",
-      "start": "09:35", "end": "09:45",
+      "start": "09:35",
+      "end": "09:45",
       "inputs": "2 phone photos (front + side profile)",
-      "tools": ["Claude Code", "Blender MCP", "Blender Python (bmesh)"],
+      "tools": [
+        "Claude Code",
+        "Blender MCP",
+        "Blender Python (bmesh)"
+      ],
       "method": "Traced the face silhouette in both photos and lofted an egg-shaped mesh through the outlines, then projected the photos on as texture.",
       "result": "Recognisable from 3/4 view only; flat face, smeared blend between photos, painted-on hair.",
       "verdict": "dead end",
@@ -19,9 +24,13 @@
     {
       "id": "02-facebuilder-photos",
       "title": "KeenTools FaceBuilder from 3 photos",
-      "start": "09:47", "end": "09:56",
+      "start": "09:47",
+      "end": "09:56",
       "inputs": "3 photos (front, left, right profile)",
-      "tools": ["KeenTools FaceBuilder 2026.3.1", "Blender"],
+      "tools": [
+        "KeenTools FaceBuilder 2026.3.1",
+        "Blender"
+      ],
       "method": "Installed the add-on from a local folder, drove FaceBuilder's face detection and auto-pinning from Python, baked a 4K texture.",
       "result": "Real 3D face form, but only 26/8/4 auto pins; generic average-head shape.",
       "verdict": "partial",
@@ -30,9 +39,12 @@
     {
       "id": "03-particle-hair",
       "title": "Particle-system hair",
-      "start": "09:57", "end": "10:03",
+      "start": "09:57",
+      "end": "10:03",
       "inputs": "FaceBuilder head",
-      "tools": ["Blender particle hair"],
+      "tools": [
+        "Blender particle hair"
+      ],
       "method": "Painted a scalp vertex group from texture darkness and grew curly children. Six iterations.",
       "result": "Looked like a knitted cap; a hidden setting reset hair length to 4 m.",
       "verdict": "dead end",
@@ -41,9 +53,13 @@
     {
       "id": "04-facebuilder-video",
       "title": "FaceBuilder from 8 video frames",
-      "start": "10:05", "end": "10:13",
+      "start": "10:05",
+      "end": "10:13",
       "inputs": "12.8 s 4K phone video (compressed)",
-      "tools": ["Swift + AVFoundation frame extractor", "FaceBuilder"],
+      "tools": [
+        "Swift + AVFoundation frame extractor",
+        "FaceBuilder"
+      ],
       "method": "Wrote a Swift tool to pull frames, picked 8 angles, auto-pinned all 8, colour-corrected skin and faded the neck.",
       "result": "Best face so far; still soft, hair flat.",
       "verdict": "partial",
@@ -52,9 +68,13 @@
     {
       "id": "05-video-photogrammetry",
       "title": "Apple Object Capture from the video",
-      "start": "10:09", "end": "10:17",
+      "start": "10:09",
+      "end": "10:17",
       "inputs": "128 frames from the video",
-      "tools": ["Swift + RealityKit PhotogrammetrySession", "Blender"],
+      "tools": [
+        "Swift + RealityKit PhotogrammetrySession",
+        "Blender"
+      ],
       "method": "Ran on-device photogrammetry, aligned the scan to the FaceBuilder face with ICP (1.4 mm median error) and grafted on the hair shell.",
       "result": "Correct overall hair volume, but hair surface came out smooth like a beret.",
       "verdict": "useful as measurement",
@@ -63,9 +83,14 @@
     {
       "id": "06-procedural-hair",
       "title": "Strand hair grown into the measured volume",
-      "start": "10:18", "end": "10:31",
+      "start": "10:18",
+      "end": "10:31",
       "inputs": "Visual hull of the hair from 8 calibrated views",
-      "tools": ["Blender hair curves", "NumPy", "Cycles"],
+      "tools": [
+        "Blender hair curves",
+        "NumPy",
+        "Cycles"
+      ],
       "method": "Carved a visual hull from the FaceBuilder cameras, grew ~190k strands combed along the skull with curl and clumping.",
       "result": "Read as tight rope curls; temples left bald by an over-aggressive mask.",
       "verdict": "dead end",
@@ -74,9 +99,13 @@
     {
       "id": "07-photo-set",
       "title": "Full-resolution photo set",
-      "start": "10:50", "end": "11:00",
+      "start": "10:50",
+      "end": "11:00",
       "inputs": "16 then 56 handheld photos",
-      "tools": ["Object Capture", "FaceBuilder"],
+      "tools": [
+        "Object Capture",
+        "FaceBuilder"
+      ],
       "method": "Re-ran capture and FaceBuilder on sharp stills.",
       "result": "Capture failed: subject turned instead of the camera orbiting, producing a flat mask. FaceBuilder skin sharper but eyes wrong colour.",
       "verdict": "dead end",
@@ -85,13 +114,35 @@
     {
       "id": "08-gaussian-splat",
       "title": "Gaussian splat trained on-device",
-      "start": "11:30", "end": "12:58",
+      "start": "11:30",
+      "end": "12:58",
       "inputs": "106 posed video frames",
-      "tools": ["Swift pose exporter (RealityKit)", "Brush 0.3.0", "three.js + gaussian-splats-3d"],
+      "tools": [
+        "Swift pose exporter (RealityKit)",
+        "Brush 0.3.0",
+        "three.js + gaussian-splats-3d"
+      ],
       "method": "Exported camera poses from Object Capture as nerfstudio JSON, trained 15,000 steps in Brush on the M4 GPU, cropped to the head, viewed in a web viewer.",
       "result": "First result that truly looks like me; soft, with wall floaters. Not riggable.",
       "verdict": "best likeness, wrong format",
       "lesson": "Splats capture likeness and hair best, but can't be animated, so they can't drive eye tracking or costumes."
+    },
+    {
+      "id": "09-final-model",
+      "title": "Final model: real eyes, hair, web export",
+      "start": "13:10",
+      "end": "13:45",
+      "inputs": "FaceBuilder head from stage 4, hair volume from stage 6",
+      "tools": [
+        "Blender bmesh + NumPy",
+        "Cycles baking",
+        "glTF exporter",
+        "three.js"
+      ],
+      "method": "Cut almond eye openings matched to the photo texture, added separate eyeballs with a procedural iris and Damped Track gaze, regrew hair from the real hairline in the texture, baked every material to images, converted 121k hair strands into 6.3k hair cards, exported a 6.9 MB GLB and wired the eyes to the cursor.",
+      "result": "Clearly me from front, 3/4 and profile; eyes move; runs in a browser. Stylised-realistic, not film quality.",
+      "verdict": "shipped",
+      "lesson": "The right format matters more than the best-looking render: a rigged mesh with separate eyes can do things a splat can't."
     }
   ]
 }

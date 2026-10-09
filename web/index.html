@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Double</title>
+<style>
+  :root { --bg: #050506; --fg: #e9e9ea; --dim: #8a8a90; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font: 13px/1.4 system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; }
+  #hud { position: fixed; left: 16px; bottom: 16px; color: var(--dim); }
+  #load { position: fixed; inset: 0; display: grid; place-items: center; color: var(--dim); }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="load">Loading model…</div>
+<div id="hud">Move your cursor: the eyes follow it.</div>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x050506);
+const camera = new THREE.PerspectiveCamera(22, innerWidth / innerHeight, 0.01, 10);
+camera.position.set(0, 0, 0.85);
+
+scene.add(new THREE.HemisphereLight(0xdfe6ff, 0x1a120c, 0.6));
+const key = new THREE.DirectionalLight(0xfff1e0, 2.4); key.position.set(-0.6, 0.5, 0.8); scene.add(key);
+const fill = new THREE.DirectionalLight(0xdfe8ff, 0.7); fill.position.set(0.8, 0.0, 0.6); scene.add(fill);
+const rim = new THREE.DirectionalLight(0xcfe0ff, 1.6); rim.position.set(0.4, 0.6, -0.8); scene.add(rim);
+
+const rig = new THREE.Group(); scene.add(rig);
+const eyes = [];
+const target = new THREE.Vector3(0, 0, 1);
+const pointer = new THREE.Vector2(0, 0);
+const smooth = new THREE.Vector2(0, 0);
+
+new GLTFLoader().load('digital_double.glb', (gltf) => {
+  const model = gltf.scene;
+  const box = new THREE.Box3().setFromObject(model);
+  const c = box.getCenter(new THREE.Vector3());
+  model.position.sub(c);
+  rig.add(model);
+  model.traverse((o) => {
+    if (!o.isMesh) return;
+    if (o.name.startsWith('Web_Hair')) {
+      o.material.alphaTest = 0.35; o.material.transparent = false; o.material.side = THREE.DoubleSide;
+      o.material.depthWrite = true;
+    }
+    if (o.name.startsWith('Web_Eye')) { eyes.push(o); o.material.roughness = 0.08; }
+  });
+  document.getElementById('load').remove();
+});
+
+addEventListener('pointermove', (e) => {
+  pointer.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+});
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight);
+});
+
+const tmp = new THREE.Vector3();
+renderer.setAnimationLoop(() => {
+  smooth.lerp(pointer, 0.12);
+  // head turns a little, eyes do the rest
+  rig.rotation.y = smooth.x * 0.25;
+  rig.rotation.x = -smooth.y * 0.12;
+  // gaze point on a plane in front of the face, in world space
+  target.set(smooth.x * 0.3, smooth.y * 0.2, 0.6);
+  for (const eye of eyes) {
+    eye.parent.worldToLocal(tmp.copy(target));
+    eye.lookAt(target);
+  }
+  renderer.render(scene, camera);
+});
+</script>
+</body>
+</html>
