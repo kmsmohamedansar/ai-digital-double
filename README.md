@@ -97,6 +97,16 @@ I flagged stray hair below the ears, eyes still looking off-centre, and an artif
 |---|---|
 | ![](stages/11-second-review/eyecheck.png) | ![](stages/11-second-review/eyecheck4.png) |
 
+### 12. Head-only bust, hair rebuilt: shipped
+After a third review I dropped the shirt (it looked worse than no shirt) and asked for the hair to be fixed in one go. The agent then:
+- **Neck:** capped it with a clean flat cut, which removed a ragged edge that showed as a glitch.
+- **Ears:** traced each ear's real outline from the mesh. Hair now grows only above and behind it, and any strand within 2.5 mm of an ear is rejected.
+- **Temples:** replaced the long, comb-like strands with short, flat hair combed back, with a soft, graduated hairline.
+
+| Temple before | Temple after |
+|---|---|
+| ![](stages/12-head-only-hair/temple_closeL.png) | ![](stages/12-head-only-hair/temple3_L.png) |
+
 ## Lessons
 1. **Capture beats cleverness.** Most failures traced back to input quality: compressed video, or a moving subject.
 2. **Choose the format for the end goal.** The splat gave the best likeness but can't be animated. A mesh with separate eyes can.
@@ -126,7 +136,7 @@ Then open http://localhost:8000. The viewer loads `digital_double.glb` and three
 | ![](screenshots/06_photo_scan_flat_mask.png) Failed capture: a flat mask | ![](screenshots/brush_training_viewer.png) Brush training the splat on the M4 GPU |
 | ![](screenshots/07_splat_as_points_in_blender.png) Splat as points in Blender (too crude) | ![](screenshots/08_splat_web_viewer_front.jpg) Splat in a web viewer: best likeness |
 | ![](screenshots/13_web_viewer_glb.jpg) Final GLB in the web viewer | ![](screenshots/16_portfolio_page.jpg) Live on the portfolio |
-| ![](screenshots/14_eyes_following_cursor_right.jpg) Eyes following the cursor to the right | ![](screenshots/15_eyes_following_cursor_left.jpg) …and to the left |
+| ![](screenshots/13_web_viewer_glb.jpg) Looking straight ahead | ![](screenshots/15_eyes_following_cursor_left.jpg) Following the cursor to the left |
 
 ## Repo layout
 ```

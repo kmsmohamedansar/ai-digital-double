@@ -175,6 +175,23 @@
       "result": "Pupils centred with no white outside the lids, clean sideburns, beard fades into the neck, collared shirt.",
       "verdict": "shipped",
       "lesson": "When a fix doesn't show up, stop guessing and trace it: a camera ray showed the patch came from an earlier repaint, not the original photo."
+    },
+    {
+      "id": "12-head-only-hair",
+      "title": "Head-only bust, hair rebuilt around ears and temples",
+      "start": "14:50",
+      "end": "15:20",
+      "inputs": "My review: shirt looked bad, hair in the ears, glitch under the neck, artificial temples",
+      "tools": [
+        "Blender bmesh + NumPy",
+        "KD-tree ear tracing",
+        "Cycles",
+        "glTF exporter"
+      ],
+      "method": "Removed the shirt and capped the neck with a flat cut; traced each ear's outline from the mesh and grew hair only above and around it; rejected any strand within 2.5 mm of an ear; replaced the comb-like temple strands with short, flat hair combed back with a soft, graduated hairline; repainted the neck in one even tone.",
+      "result": "Clean ears and neck, natural cropped temples, head-only bust.",
+      "verdict": "shipped",
+      "lesson": "Rough bounding boxes caused most of the hair errors; tracing the real ear shape fixed them in one pass."
     }
   ]
 }

@@ -49,7 +49,7 @@ def timeline_chart():
     plot_w = width - left - right
     height = top + row * len(stages) + 80
     x = lambda t: left + (t - t0) / (t1 - t0) * plot_w
-    parts = [f"<text class='t' x='20' y='26' font-size='16'>Eleven stages in one day, {stages[0]['start']}–{stages[-1]['end']}</text>"]
+    parts = [f"<text class='t' x='20' y='26' font-size='16'>Twelve stages in one day, {stages[0]['start']}–{stages[-1]['end']}</text>"]
     # hour gridlines
     for t in range((t0 // 60 + 1) * 60, t1 + 1, 60):
         parts.append(f"<line class='g' x1='{x(t):.1f}' x2='{x(t):.1f}' y1='{top - 6}' y2='{top + row * len(stages)}' stroke='#d0d7de' stroke-dasharray='3 3'/>")
