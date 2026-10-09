@@ -1,0 +1,97 @@
+{
+  "project": "AI Digital Double",
+  "date": "2026-10-09",
+  "agent": "Claude Code (Opus 5.5) driving Blender 5.2 through the Blender MCP server",
+  "hardware": "MacBook, Apple M4, 16 GB RAM",
+  "cost_usd": 0,
+  "stages": [
+    {
+      "id": "01-code-built-head",
+      "title": "Head built purely from code",
+      "start": "09:35", "end": "09:45",
+      "inputs": "2 phone photos (front + side profile)",
+      "tools": ["Claude Code", "Blender MCP", "Blender Python (bmesh)"],
+      "method": "Traced the face silhouette in both photos and lofted an egg-shaped mesh through the outlines, then projected the photos on as texture.",
+      "result": "Recognisable from 3/4 view only; flat face, smeared blend between photos, painted-on hair.",
+      "verdict": "dead end",
+      "lesson": "Two silhouettes describe an outline, not a face. Geometry needs real 3D information."
+    },
+    {
+      "id": "02-facebuilder-photos",
+      "title": "KeenTools FaceBuilder from 3 photos",
+      "start": "09:47", "end": "09:56",
+      "inputs": "3 photos (front, left, right profile)",
+      "tools": ["KeenTools FaceBuilder 2026.3.1", "Blender"],
+      "method": "Installed the add-on from a local folder, drove FaceBuilder's face detection and auto-pinning from Python, baked a 4K texture.",
+      "result": "Real 3D face form, but only 26/8/4 auto pins; generic average-head shape.",
+      "verdict": "partial",
+      "lesson": "A morphable model is only as good as the number of well-pinned views."
+    },
+    {
+      "id": "03-particle-hair",
+      "title": "Particle-system hair",
+      "start": "09:57", "end": "10:03",
+      "inputs": "FaceBuilder head",
+      "tools": ["Blender particle hair"],
+      "method": "Painted a scalp vertex group from texture darkness and grew curly children. Six iterations.",
+      "result": "Looked like a knitted cap; a hidden setting reset hair length to 4 m.",
+      "verdict": "dead end",
+      "lesson": "Un-groomed procedural hair never reads as a specific person's hair."
+    },
+    {
+      "id": "04-facebuilder-video",
+      "title": "FaceBuilder from 8 video frames",
+      "start": "10:05", "end": "10:13",
+      "inputs": "12.8 s 4K phone video (compressed)",
+      "tools": ["Swift + AVFoundation frame extractor", "FaceBuilder"],
+      "method": "Wrote a Swift tool to pull frames, picked 8 angles, auto-pinned all 8, colour-corrected skin and faded the neck.",
+      "result": "Best face so far; still soft, hair flat.",
+      "verdict": "partial",
+      "lesson": "More angles beat more resolution for fitting; compression hurts texture."
+    },
+    {
+      "id": "05-video-photogrammetry",
+      "title": "Apple Object Capture from the video",
+      "start": "10:09", "end": "10:17",
+      "inputs": "128 frames from the video",
+      "tools": ["Swift + RealityKit PhotogrammetrySession", "Blender"],
+      "method": "Ran on-device photogrammetry, aligned the scan to the FaceBuilder face with ICP (1.4 mm median error) and grafted on the hair shell.",
+      "result": "Correct overall hair volume, but hair surface came out smooth like a beret.",
+      "verdict": "useful as measurement",
+      "lesson": "Photogrammetry cannot resolve individual curls from compressed video, but it measures volume well."
+    },
+    {
+      "id": "06-procedural-hair",
+      "title": "Strand hair grown into the measured volume",
+      "start": "10:18", "end": "10:31",
+      "inputs": "Visual hull of the hair from 8 calibrated views",
+      "tools": ["Blender hair curves", "NumPy", "Cycles"],
+      "method": "Carved a visual hull from the FaceBuilder cameras, grew ~190k strands combed along the skull with curl and clumping.",
+      "result": "Read as tight rope curls; temples left bald by an over-aggressive mask.",
+      "verdict": "dead end",
+      "lesson": "Hair likeness is about grooming direction and clump shape, which needs a human (or far better data)."
+    },
+    {
+      "id": "07-photo-set",
+      "title": "Full-resolution photo set",
+      "start": "10:50", "end": "11:00",
+      "inputs": "16 then 56 handheld photos",
+      "tools": ["Object Capture", "FaceBuilder"],
+      "method": "Re-ran capture and FaceBuilder on sharp stills.",
+      "result": "Capture failed: subject turned instead of the camera orbiting, producing a flat mask. FaceBuilder skin sharper but eyes wrong colour.",
+      "verdict": "dead end",
+      "lesson": "Photogrammetry needs a static subject and a moving camera. Selfies break it."
+    },
+    {
+      "id": "08-gaussian-splat",
+      "title": "Gaussian splat trained on-device",
+      "start": "11:30", "end": "12:58",
+      "inputs": "106 posed video frames",
+      "tools": ["Swift pose exporter (RealityKit)", "Brush 0.3.0", "three.js + gaussian-splats-3d"],
+      "method": "Exported camera poses from Object Capture as nerfstudio JSON, trained 15,000 steps in Brush on the M4 GPU, cropped to the head, viewed in a web viewer.",
+      "result": "First result that truly looks like me; soft, with wall floaters. Not riggable.",
+      "verdict": "best likeness, wrong format",
+      "lesson": "Splats capture likeness and hair best, but can't be animated, so they can't drive eye tracking or costumes."
+    }
+  ]
+}
