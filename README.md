@@ -1,26 +1,63 @@
 # AI Digital Double
 
-I directed an AI coding agent (Claude Code) that drives Blender to build a 3D model of my own head. The inputs were phone photos, a 13-second video and free tools on a laptop. The result runs in a browser, and its eyes follow your cursor.
+**Can one person with a phone, a laptop and an AI agent build a 3D model of their own head that looks back at you? Yes. Here's every step, including the parts that failed.**
 
-**[See it live on my portfolio](https://kmsmohamedansar.github.io/#digital-double)**
+I directed an AI coding agent (Claude Code) to drive Blender and a handful of free tools. My inputs were phone photos, a 13-second video and my own review notes. The result runs in a browser, and its eyes follow your cursor.
+
+**[See it live on my portfolio →](https://kmsmohamedansar.github.io/#digital-double)**
 
 | Front | Three-quarter | Profile |
 |---|---|---|
 | ![](final/final_front.png) | ![](final/final_threequarter.png) | ![](final/final_profile.png) |
 
-This repo documents every attempt: what I tried, what the AI did, what each result looked like, and why it worked or failed.
-
 ## At a glance
 
 | | |
 |---|---|
-| Agent | Claude Code, driving Blender through the Blender MCP server |
-| 3D software | Blender 5.2, KeenTools FaceBuilder (add-on), Brush 0.3 (Gaussian splatting), three.js |
+| Agent | Claude Code, driving Blender live through the Blender MCP server |
+| 3D tools | Blender 5.2, KeenTools FaceBuilder, Apple Object Capture, Brush 0.3 (Gaussian splatting), three.js |
+| Code the agent wrote | Python inside Blender (mesh, hair, texture and shader work), 3 Swift tools, a chart generator, the web viewer |
 | Capture | iPhone 14 Pro Max: photos and a 13-second video |
-| Hardware | MacBook with Apple M4, 16 GB RAM |
+| Hardware | Laptop with Apple M4, 16 GB RAM |
 | Cost | $0 |
-| Time | About 3.5 hours of hands-on work across 9 approaches plus a review pass |
-| Output | A 6.9 MB GLB with separate eyeballs, in a web viewer where the eyes follow the cursor |
+| Time | About 6 hours across 12 stages, including 4 rounds of my review |
+| Output | An 8 MB GLB (head, separate eyeballs, hair cards) in a web viewer where the eyes follow the cursor |
+
+## How it works
+
+![Pipeline](charts/pipeline.svg)
+
+The loop that did the real work:
+
+```mermaid
+flowchart LR
+    A[I describe what's wrong<br/>in plain English] --> B[Claude Code plans<br/>and writes Python]
+    B --> C[Runs it live in Blender<br/>via MCP]
+    C --> D[Renders the result<br/>and looks at it]
+    D -->|not right yet| B
+    D -->|looks right| E[Shows me renders]
+    E -->|I spot a problem| A
+    E -->|approved| F[Bake, export GLB,<br/>update this repo]
+```
+
+What a single fix looks like, for example "there's hair in my ears":
+
+```mermaid
+sequenceDiagram
+    participant Me
+    participant Agent as Claude Code
+    participant B as Blender (MCP)
+    Me->>Agent: hair is in the ears and below them
+    Agent->>B: measure head width at each height
+    B-->>Agent: skull 57 mm, ears stick out to 63-71 mm
+    Agent->>B: trace each ear's outline from the mesh
+    Agent->>B: regrow 160k strands, reject any within 2.5 mm of an ear
+    Agent->>B: render both profiles
+    B-->>Agent: images
+    Agent->>Me: before/after renders
+```
+
+## Charts
 
 ![Timeline](charts/timeline.svg)
 
@@ -127,16 +164,39 @@ cd web && python3 -m http.server 8000
 Then open http://localhost:8000. The viewer loads `digital_double.glb` and three.js from a CDN.
 
 ## Screenshots: the tools in action
+
+### Blender, driven by the agent
 | | |
 |---|---|
-| ![](screenshots/01_blender_connected_default_scene.png) Blender connected to Claude through MCP | ![](screenshots/02_reference_photos_aligned.png) Reference photos aligned to scale |
-| ![](screenshots/10_facebuilder_8_views_and_cameras.png) FaceBuilder: 8 video views solved, cameras around the head | ![](screenshots/12_skin_shader_nodes.png) Skin shader nodes built by the agent |
-| ![](screenshots/03_particle_hair_viewport.png) Particle hair attempt | ![](screenshots/11_strand_hair_viewport.png) Strand hair (190k curves) |
-| ![](screenshots/04_video_scan_imported.png) Apple Object Capture scan imported | ![](screenshots/05_hair_volume_from_8_views.png) Hair volume carved from 8 views |
-| ![](screenshots/06_photo_scan_flat_mask.png) Failed capture: a flat mask | ![](screenshots/brush_training_viewer.png) Brush training the splat on the M4 GPU |
-| ![](screenshots/07_splat_as_points_in_blender.png) Splat as points in Blender (too crude) | ![](screenshots/08_splat_web_viewer_front.jpg) Splat in a web viewer: best likeness |
-| ![](screenshots/13_web_viewer_glb.jpg) Final GLB in the web viewer | ![](screenshots/16_portfolio_page.jpg) Live on the portfolio |
-| ![](screenshots/13_web_viewer_glb.jpg) Looking straight ahead | ![](screenshots/15_eyes_following_cursor_left.jpg) Following the cursor to the left |
+| ![](screenshots/01_blender_connected_default_scene.png) Blender connected to Claude through MCP: the starting scene | ![](screenshots/02_reference_photos_aligned.png) Reference photos aligned to real-world scale |
+| ![](screenshots/18_head_mesh_topology.png) The head mesh: 18k vertices of clean, animatable topology | ![](screenshots/21_face_texture_uv.png) The face texture and its UV layout, with every repair painted in by code |
+| ![](screenshots/20_eye_shader_nodes.png) The eye shader: a procedural iris, pupil and wet coat, built node by node | ![](screenshots/12_skin_shader_nodes.png) The skin shader: tone correction, pores, subsurface scattering |
+| ![](screenshots/19_ear_outline_traced.png) The ear outline traced from the mesh (red), used to keep hair out of the ears | ![](screenshots/17_blender_final_hair_selected.png) The final hair: 160k strands as Blender hair curves |
+
+### KeenTools FaceBuilder
+| | |
+|---|---|
+| ![](screenshots/10_facebuilder_8_views_and_cameras.png) 8 video frames solved, with a camera placed for each view | ![](stages/04-facebuilder-video/input_video_frames.png) The video frames it was fitted to |
+
+### Photogrammetry and Gaussian splats
+| | |
+|---|---|
+| ![](screenshots/04_video_scan_imported.png) Apple Object Capture scan from 128 video frames | ![](screenshots/05_hair_volume_from_8_views.png) Hair volume carved from 8 calibrated views |
+| ![](screenshots/06_photo_scan_flat_mask.png) A failed capture: turning my head instead of the camera gave a flat mask | ![](screenshots/brush_training_viewer.png) Brush training a Gaussian splat on the M4 GPU |
+| ![](screenshots/07_splat_as_points_in_blender.png) The splat as raw points in Blender | ![](screenshots/08_splat_web_viewer_front.jpg) The splat in a web viewer: the best likeness, but it can't be animated |
+
+### Hair, from bad to better
+| | |
+|---|---|
+| ![](screenshots/03_particle_hair_viewport.png) Particle hair: looked like a knitted cap | ![](screenshots/11_strand_hair_viewport.png) First strand hair: rope-like curls |
+| ![](stages/12-head-only-hair/temple_closeL.png) Temples before: comb-teeth strands | ![](stages/12-head-only-hair/temple3_L.png) Temples after: short, flat, soft hairline |
+
+### In the browser
+| | |
+|---|---|
+| ![](screenshots/13_web_viewer_glb.jpg) The final GLB in a three.js viewer, looking straight ahead | ![](screenshots/15_eyes_following_cursor_left.jpg) Head and eyes following the cursor |
+| ![](screenshots/16_portfolio_page.jpg) On the portfolio | ![](screenshots/22_portfolio_how_it_was_made.jpg) The "How it was made" section on the portfolio |
+| ![](screenshots/23_portfolio_stage_cards.jpg) Stage cards on the portfolio | ![](screenshots/09_splat_web_viewer_orbit.jpg) The splat viewer, orbited |
 
 ## Repo layout
 ```
