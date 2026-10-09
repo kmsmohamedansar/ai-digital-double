@@ -71,3 +71,17 @@ data/         timeline and metrics used for the charts
 - Final model: FaceBuilder base, refined likeness, real eyeballs, strand hair, swappable outfits
 - Export to GLB, with a three.js viewer where the eyes follow the cursor
 - Charts and a write-up on my portfolio
+
+## Screenshots: the tools in action
+| | |
+|---|---|
+| ![](screenshots/01_blender_connected_default_scene.png) Blender connected to Claude through MCP | ![](screenshots/02_reference_photos_aligned.png) Reference photos aligned to scale |
+| ![](screenshots/10_facebuilder_8_views_and_cameras.png) FaceBuilder: 8 video views solved, cameras around the head | ![](screenshots/12_skin_shader_nodes.png) Skin shader nodes built by the agent |
+| ![](screenshots/03_particle_hair_viewport.png) Particle hair attempt | ![](screenshots/11_strand_hair_viewport.png) Strand hair (190k curves) |
+| ![](screenshots/04_video_scan_imported.png) Apple Object Capture scan imported | ![](screenshots/05_hair_volume_from_8_views.png) Hair volume carved from 8 views |
+| ![](screenshots/06_photo_scan_flat_mask.png) Failed capture: a flat mask | ![](screenshots/brush_training_viewer.png) Brush training the splat on the M4 GPU |
+| ![](screenshots/07_splat_as_points_in_blender.png) Splat as points in Blender (too crude) | ![](screenshots/08_splat_web_viewer_front.jpg) Splat in a web viewer: best likeness |
+
+## Best result so far
+- **Likeness:** the Gaussian splat (stage 8). It's the only version that unmistakably looks like me, but it's soft and can't be animated.
+- **Usable model:** the FaceBuilder head from video (stage 4). Clean, animatable geometry with 8-view fitting, but the likeness is approximate.
