@@ -1,5 +1,12 @@
 # AI Digital Double
 
+## In plain English
+
+This experiment asks whether one person can turn ordinary phone photos and a short video into an interactive 3D likeness with help from an AI coding agent. The repository documents both the successful result and the approaches that did not work.
+
+**Status:** Completed browser experiment with a live demonstration.
+
+
 **Can one person with a phone, a laptop and an AI agent build a 3D model of their own head that looks back at you? Yes. Here's every step, including the parts that failed.**
 
 I directed an AI coding agent (Claude Code) to drive Blender and a handful of free tools. My inputs were phone photos, a 13-second video and my own review notes. The result runs in a browser, and its eyes follow your cursor.
